@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="vendors/css/normalize.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/grid.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/ionicons.css">
+        <link rel="stylesheet" type="text/css" href="vendors/css/animate.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/style.css">
+        <link rel="stylesheet" type="text/css" href="resources/css/queries.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css">
+
+
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300,300i,400" rel="stylesheet">
+        <title>Search Movies</title>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/resources/favicons/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/resources/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/resources/favicons/favicon-16x16.png">
+        <link rel="manifest" href="/resources/favicons/manifest.json">
+        <link rel="mask-icon" href="/resources/favicons/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="/resources/favicons/favicon.ico">
+        <meta name="msapplication-config" content="/resources/favicons/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.203.0.min.js"></script>
+        <script src="./resources/js/aws-cognito-sdk.min.js"></script>
+        <script src="./resources/amazon-cognito-identity.min.js"></script>
+        <script type="text/javascript" src="./resources/lib/axios/dist/axios.standalone.js"></script>
+        <script type="text/javascript" src="./resources/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+        <script type="text/javascript" src="./resources/lib/CryptoJS/rollups/sha256.js"></script>
+        <script type="text/javascript" src="./resources/lib/CryptoJS/components/hmac.js"></script>
+        <script type="text/javascript" src="./resources/lib/CryptoJS/components/enc-base64.js"></script>
+        <script type="text/javascript" src="./resources/lib/url-template/url-template.js"></script>
+        <script type="text/javascript" src="./resources/lib/apiGatewayCore/sigV4Client.js"></script>
+        <script type="text/javascript" src="./resources/lib/apiGatewayCore/apiGatewayClient.js"></script>
+        <script type="text/javascript" src="./resources/lib/apiGatewayCore/simpleHttpClient.js"></script>
+        <script type="text/javascript" src="./resources/lib/apiGatewayCore/utils.js"></script>
+        <script type="text/javascript" src="./resources/js/apigClient.js"></script>
+
+        <script src="./resources/js/app.js"></script>
+        <script src="./resources/js/code2token.js"></script>
+        <script src="./resources/js/integrateuserpool.js"></script>
+        <script src="./resources/js/saveImage.js"></script>
+        <script type="text/javascript" src="./resources/js/star.js"></script>
+        <script type="text/javascript" src="./resources/js/Quantity.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {
+    font-family: Arial;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+form.example input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+form.example button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+}
+
+form.example button:hover {
+    background: #0b7dda;
+}
+
+form.example::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+</style>
+
+<!-- Here is the chatbot CSS -->
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+
+<style>
+    /* for chat UI */
+
+    .floating-action {
+        bottom: 0;
+        position: fixed;
+        margin: 1em;
+        right: 0;
+        z-index: 1000;
+    }
+
+    .btn.btn-fab {
+        padding: 16px;
+        border-radius: 50%;
+    }
+
+    .floating-btn {
+        background: #de6d11 none repeat scroll 0 0;
+        bottom: 24px;
+        color: #fff;
+        position: fixed;
+        right: 24px;
+        z-index: 1000;
+    }
+
+    .btn-fab {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+    }
+
+    .btn-raised {
+        box-shadow: 0 5px 3px 0 rgba(0, 0, 0, .12), 0 1px 2px 0 rgba(0, 0, 0, .24);
+    }
+
+    #chat-window {
+        background: #FFFFFF;
+        height: 500px;
+        width: 300px;
+        margin: 36px 36px;
+        border-radius: 26px;
+        display: none;
+        box-shadow: 0 5px 3px 0 rgba(0, 0, 0, .12), 0 1px 2px 0 rgba(0, 0, 0, .24);
+        font: 12px;
+    }
+
+    .input-chat {
+        box-shadow: 0px -8px 20px -10px #ddd;
+        width: 81%;
+        position: absolute;
+        bottom: 0;
+        height: 70px;
+        margin-bottom: 30px;
+        display: flex;
+        border-top: 1px solid #ddd;
+    }
+
+    .outer-container {
+        width: 90%;
+        height: 65px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 25px;
+    }
+
+    .inner-container {
+        border: none;
+        width: 100%;
+        resize: none;
+        outline: none;
+        height: 70px;
+        font-size: small;
+        position: absolute;
+        left: 0;
+        overflow-x: scroll;
+        overflow-y: scroll;
+        padding: 10px;
+    }
+
+    .inner-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .chat-header {
+        height: 40px;
+        border-radius: 26px 26px 0px 0px;
+        background: #de6d11;
+        margin-top: 36px;
+        width: 100%;
+        color: white;
+        padding: 10px 20px;
+    }
+
+    .chat-container {
+        overflow: auto;
+        height: 390px;
+        width: 100%;
+        position: relative;
+        background: beige;
+        /* background:url('wallpaper-chatbot.jpg'); */
+    }
+
+    .chat-container::-webkit-scrollbar {
+        display: none;
+        width: 8px;
+    }
+
+
+    .msg-text-robot {
+        height: fit-content;
+        border-radius: 8px 8px 8px 8px;
+        background: rgba(102, 100, 100, 0.5);
+        color: #fff;
+        padding: 5px 10px;
+        font-size: small;
+        box-shadow: 0 0px 5px 0px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .arrow-left {
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-right: 5px solid rgba(26, 26, 26, 0.50);
+        top: 7%;
+        position: relative;
+        border-width: 5px;
+        margin-top: 5%;
+    }
+
+    .msg-text-sent {
+        height: fit-content;
+        border-radius: 8px 8px 8px 8px;
+        background: rgba(236, 164, 9, 0.5);
+        color: #480563;
+        padding: 5px 10px;
+        font-size: small;
+        box-shadow: 0 0px 5px 0px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid rgba(236, 164, 9, 0.5);
+        top: 7%;
+        position: relative;
+        border-width: 5px;
+        margin-top: 5%;
+    }
+
+    .avatar {
+        background: #850909;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        color: white;
+        padding: 5px 10px;
+    }
+
+    .time-stamp {
+        font-size: xx-small;
+        color: #000;
+        margin: 5px;
+    }
+
+    .msg {
+        height: fit-content;
+        padding: 10px 10px 0px 10px;
+        display: flex;
+    }
+
+    .sent-msg {
+        flex-direction: row-reverse;
+    }
+
+    .msgbox-group {
+        display: flex;
+        margin-left: 5px;
+    }
+
+    #attachFile>input {
+        display: none !important;
+    }
+    .button {
+        background-color: #de6d11;
+        border: none;
+        color: white;
+        border-radius: 10px 10px 10px 10px;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 10px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+
+</style>
+
+<!-- Here is the fucntion of chatbot -->
+
+<script>
+
+    $(document).ready(function () {
+
+        var bIconDisplay = true;
+        $('#collapse').css('display', 'none');
+        $('#msg').css('display', 'block');
+
+        $('#input-msg').val('');
+
+        $("a[href='#chat-window']").click(function () {
+            $('#chat-window').toggle("slide");
+            if (bIconDisplay) {
+                if ($('.chat-container').children('.msg').length == 0) {
+                    setTimeout(function () {
+                        initialMsg();
+
+                    }, 1000);
+                }
+                $('#collapse').css('display', 'block');
+                $('#msg').css('display', 'none');
+                bIconDisplay = false;
+            } else {
+                $('#collapse').css('display', 'none');
+                $('#msg').css('display', 'block');
+                bIconDisplay = true;
+            }
+        });
+
+        $("#input-msg").keypress(function(event) {
+           //alert("enter event");
+
+           if (event.which == 13) {
+                event.preventDefault();
+
+               if ($('#input-msg').val() != '') {
+                $('.chat-container').append(`<div class="msg sent-msg">
+                <div style="display:inline;">
+                    <div class="msgbox-group">
+                        <div>
+                            <div class="msg-text-sent">`
+                    + $('#input-msg').val() +
+                    `</div>
+                            <div class="time-stamp pull-right">`
+                    + getCurrentTime() +
+                    `</div>
+                        </div>
+                        <div class="arrow-right"></div>
+                    </div>
+                </div>
+            </div>`);
+                setTimeout(function () {
+                     send();
+                    //getMe ssage($('#input-msg').val());
+                    $('#input-msg').val('');
+                }, 500);
+                var oWords = document.getElementById("chatcontainer");
+                oWords.scrollTop = oWords.scrollHeight;
+            }
+            }
+        });
+        $("#send-msg").click(function () {
+            //alert("Send event");
+
+            if ($('#input-msg').val() != '') {
+                $('.chat-container').append(`<div class="msg sent-msg">
+                <div style="display:inline;">
+                    <div class="msgbox-group">
+                        <div>
+                            <div class="msg-text-sent">`
+                    + $('#input-msg').val() +
+                    `</div>
+                            <div class="time-stamp pull-right">`
+                    + getCurrentTime() +
+                    `</div>
+                        </div>
+                        <div class="arrow-right"></div>
+                    </div>
+                </div>
+            </div>`);
+                setTimeout(function () {
+                     send();
+                    //getMessage($('#input-msg').val());
+                    $('#input-msg').val('');
+                }, 500);
+                var oWords = document.getElementById("chatcontainer");
+                oWords.scrollTop = oWords.scrollHeight;
+            }
+
+
+        });
+
+
+
+        /*function getCurrentTime() {
+            var CurrentDate = new Date();
+            return CurrentDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        }
+*/
+        function initialMsg() {
+            $('.chat-container').append(`<div class="msg">
+                <div style="display:inline;">
+                    <div class="avatar">S</div>
+                </div>
+                <div style="display:inline;">
+                    <div class="msgbox-group">
+                        <div class="arrow-left"></div>
+                        <div>
+                            <div class="msg-text-robot">
+                                <p>Hello! I am Cinema Finder, it is my pleasure to help you!</p>
+
+                            <div class="time-stamp pull-left">`
+                + getCurrentTime() +
+                `</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+        }
+    })
+
+    function getMessage(txt) {
+            $('.chat-container').append(`<div class="msg">
+                <div style="display:inline;">
+                    <div class="avatar">S</div>
+                </div>
+                <div style="display:inline;">
+                    <div class="msgbox-group">
+                        <div class="arrow-left"></div>
+                        <div>
+                            <div class="msg-text-robot">`
+                + txt +
+                `</div>
+                            <div class="time-stamp pull-left">`
+                + getCurrentTime() +
+                `</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+            var oWords = document.getElementById("chatcontainer");
+            oWords.scrollTop = oWords.scrollHeight;
+        }
+
+    function getCurrentTime() {
+            var CurrentDate = new Date();
+            return CurrentDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        }
+
+    //Access token And API.AI Post Call
+
+    // Send Precess...
+    // This is where we use ajax to use the api we get//
+    function send() {
+        var text = $("#input-msg").val();
+
+        console.log('hello 1');
+
+        //   $.ajax({
+        //     type: 'POST',
+        //     url: 'https://jt3d9wpum4.execute-api.us-east-1.amazonaws.com/dev/chat',
+        //     // headers: {
+        //     //       "x-api-key": "NEJgWeu3wBvWkn6Oiekx2FeaK1QL6tO1094KjU8e"
+        //     //   },
+        //     data: JSON.stringify({
+        //         messages: [
+        //             {
+        //                 type: "abc",
+        //                 unconstruced: {
+        //                     id: "yes",
+        //                     text: `${text}`,
+        //                     timestamp: "10293"
+        //                 }
+        //             }
+        //         ]
+        //     }),
+        //    //alert(data);
+        //     success: function(data) {
+            //     console.log(data);
+            //      $('.chat-container').append(`<div class="msg">
+            //     <div style="display:inline;">
+            //         <div class="avatar">S</div>
+            //     </div>
+            //     <div style="display:inline;">
+            //         <div class="msgbox-group">
+            //             <div class="arrow-left"></div>
+            //             <div>
+            //                 <div class="msg-text-robot">`
+            //         + `${data.messages[0].unconstruced.text}` +
+            //         `</div> <div class="time-stamp pull-left"> `
+            //         + getCurrentTime() +
+            //         `</div>
+            //             </div>
+            //         </div>
+            //     </div>
+            // </div>`);
+        //     },
+
+        // });
+            axios.post('https://jt3d9wpum4.execute-api.us-east-1.amazonaws.com/dev/chat', 
+                {"text": text})
+            .then(function (response) {
+                var received = JSON.parse(response.data.body);
+                console.log(received["message"])
+                 $('.chat-container').append(`<div class="msg">
+                <div style="display:inline;">
+                    <div class="avatar">S</div>
+                </div>
+                <div style="display:inline;">
+                    <div class="msgbox-group">
+                        <div class="arrow-left"></div>
+                        <div>
+                            <div class="msg-text-robot">`
+                    + received["message"] +
+                    `</div> <div class="time-stamp pull-left"> `
+                    + getCurrentTime() +
+                    `</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+                var oWords = document.getElementById("chatcontainer");
+                oWords.scrollTop = oWords.scrollHeight;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        $('#input').val("");
+
+
+        //setResponse("Loading...");
+    }
+</script>
+
+    </head>
+    <body onload="InitEvent()" class="wrapper">
+               <!-- Here is the chatbot body HTML code -->
+      <div class="floating-action">
+
+          <a class="floating-btn btn btn-fab btn-raised" href="#chat-window">
+              <svg id="msg" fill="#fff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+                  />
+                  <path d="M0 0h24v24H0z" fill="none" />
+              </svg>
+              <svg id="collapse" fill="#fff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" fill="#fff" />
+              </svg>
+          </a>
+          <div id="chat-window">
+              <div class="chat-header">Cinema Location Helper</div>
+             <!-- <iframe width="295"
+      height="450" src="http://localhost:8080/Chat/APIAIBOT.html"/>
+              -->
+      <div class="chat-container" id="chatcontainer">
+                  <!--<div>
+                      <img style="position: absolute; clip: rect(120px,60px,200px,0px);" src="./loading.gif">
+                  </div> -->
+
+              </div>
+              <div class="input-chat">
+                  <div class="outer-container">
+                      <textarea id="input-msg" class="inner-container" placeholder="Enter text here...">
+                      </textarea>
+                  </div>
+                  <div style="display:flex; flex-direction:column;">
+                      <span style="margin-top:5px; cursor:pointer;" id="send-msg" title="send">
+                                  <svg   fill="#666" height="20" viewBox="0 0 22 22" width="20" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                      <path d="M0 0h24v24H0z" fill="none"/>
+                                  </svg>
+                          </span>
+                     <!-- <span title="Attach File" id="attachFile">
+                              <label for="file-upload">
+                                      <svg style="cursor:pointer;" fill="#666" height="20" viewBox="0 0 22 22" width="20" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M2 12.5C2 9.46 4.46 7 7.5 7H18c2.21 0 4 1.79 4 4s-1.79 4-4 4H9.5C8.12 15 7 13.88 7 12.5S8.12 10 9.5 10H17v2H9.41c-.55 0-.55 1 0 1H18c1.1 0 2-.9 2-2s-.9-2-2-2H7.5C5.57 9 4 10.57 4 12.5S5.57 16 7.5 16H17v2H7.5C4.46 18 2 15.54 2 12.5z"
+                                          />
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                      </svg>
+                              </label>
+                              <input type="file" id="file-upload">
+                      </span>-->
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- Here is the main body of HTML -->
+
+        <header>
+            <nav> <!--navigation-->
+                <div class="row">
+                    <!-- <img src="resources/img/logo-white.png" alt="Omnifood logo" class="logo">
+                    <img src="resources/img/logo.png" alt="Omnifood logo" class="logo-black"> -->
+                    <ul class="main-nav js--main-nav">
+                        
+                        <!--ul for un** list-->
+                        <li><a href = "#history">History</a></li>
+                        <!--li for list-->
+                        
+                        <li><a href="https://fxw1996cc.auth.us-east-1.amazoncognito.com/login/?response_type=code&client_id=6oie7f5gbu8omoio1j08iiihds&redirect_uri=https://s3.amazonaws.com/coms6998-final/html2/index.html" id = "login">Log in</a></li>
+                    </ul>
+                    <a class="mobile-nav-icon js--nav-icon"><i class="ion-navicon-round"></i></a>
+                </div>
+            </nav>
+
+            <!--can write some intro here-->
+            <div class="hero-text-box">
+                <h1>Wanna get awesome movie?<br>Come to us!</h1> <!--br means a break-->
+                <!-- <a class="btn btn-full js--scroll-to-start" href="#">Personal recommendation</a>
+                <a href="#order-page" class="btn btn-ghost" >Quick order</a> -->
+
+
+                <!-- Here is the search button -->
+                  <form class="example" name="search" action = "https://s3.amazonaws.com/coms6998-final/html2/html2/redirect.htm">
+                    <input type="text" id="mv" placeholder="Search.." name="movie">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                  </form>
+				
+            </div>
+
+        </header>
+
+    <section id="history">
+            <div class="row">
+                <h2>
+                    My History
+                </h2>
+            </div>
+
+            <div class="row">
+                <div class="col span-1-of-3">
+                    <div class="plan-box js--wp-2">
+                        <div>
+                            <h3 id = "rname1">&nbsp;</h3>
+                            <!-- <p class="plan-price">$$</p> -->
+                        </div>
+                        <ul>
+                            <!-- <a href="www.baidu.com">
+    							<img border="0" src="/i/eg_buttonnext.gif" />
+							</a> -->
+							<div id="image1"></div>
+
+                        </ul>
+                        <div>
+                            <a id="comment1">&nbsp;</a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col span-1-of-3">
+                    <div class="plan-box js--wp-1">
+                        <div>
+                            <h3 id = "rname2">&nbsp;</h3>
+                            <!-- <p class="plan-price">$$</p> -->
+                        </div>
+                        <ul>
+                            <div id="image2"></div>
+                        </ul>
+                        <div>
+                            <a id="comment2">&nbsp;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col span-1-of-3">
+                    <div class="plan-box js--wp-3">
+                        <div>
+                            <h3 id = "rname3">&nbsp;</h3>
+                            <!-- <p class="plan-price">$$</p> -->
+                        </div>
+                        <ul>
+                            <div id="image3"></div>
+                        </ul>
+                        <div>
+                            <a id="comment3">&nbsp;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section></section>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="vendors/js/jquery.waypoints.min.js"></script>
+        <script src="http://maps.google.com/maps/api/js"></script>
+
+        <script src="resources/js/script.js" ></script>
+        <script src="resources/js/gmaps.js"></script>
+        <footer>
+    <p>Designed by: Team 10</p>
+    <p>Contact information: <a href="mailto:someone@example.com">zt2219@columbia.edu</a>.</p>
+  </footer>
+  
+
+    </body>
+<!-- Script for history -->
+<script>
+  var AWS = window.AWS;
+  AWS.config.update({region:'us-east-1'});
+  var parser = document.createElement('a');
+  parser.href = window.location.href;
+
+  var raw_code = parser.search;
+  var target_code = raw_code.slice(6,);
+  console.log(target_code);
+
+  var token_response = "";
+  console.log("Start testing the cognito");
+
+
+  var settings = {
+      "async": false,
+      "crossDomain": true,
+      "url": "https://fxw1996cc.auth.us-east-1.amazoncognito.com/oauth2/token",
+      "method": "POST",
+      "headers": {
+          "content-type": "application/x-www-form-urlencoded"
+      },
+      "data": {
+          "grant_type": "authorization_code",
+          "client_id": "6oie7f5gbu8omoio1j08iiihds",
+          "redirect_uri": "https://s3.amazonaws.com/coms6998-final/html2/index.html",
+          "code": target_code
+      }
+  };
+
+  $.ajax(settings).done(function (response) {
+      token_response = response;
+      console.log(response);
+      acctoken = response.access_token
+      console.log(acctoken);
+      console.log("test");
+  });
+
+var cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+  var params = {
+  AccessToken: acctoken /* required */
+};
+
+cognitoidentityserviceprovider.getUser(params, function(err, data) {
+  if (err) console.log(err, err.stack); // an error occurred
+  else{
+        console.log(data);
+        console.log(data.Username);
+        user = data.Username;
+        localStorage.setItem("username", user);
+        
+        axios.get('https://jt3d9wpum4.execute-api.us-east-1.amazonaws.com/dev/comment?user=' + user)
+            .then(function (response) {
+                const Data_received = response.data.body.data.Items.reverse();
+                received1 = Data_received[0];
+                console.log(received1);
+                console.log("S")
+                document.getElementById("rname1").innerHTML = received1["movie"]["S"];
+                document.getElementById("comment1").innerHTML = received1["comment"]["S"];
+                var img_1 = "\"" + received1["img"]["S"].toString() + "\"";
+                var url_1 = "\"" + "https://s3.amazonaws.com/coms6998-final/html5/html2/singlev201-the-one.htm?movie=" + received1["movieID"]["S"] + "\"";
+                // console.log(url_1);
+                // console.log(img_1)
+                console.log("<a href=" + url_1 + ">" + "<img src="  + img_1 + "width=\"100%\" height=\"100%\">" + "</a>")
+                // document.getElementById("image1").innerHTML = "<img src="  + img_1 + "width=\"100%\" height=\"100%\">";
+                document.getElementById("image1").innerHTML = "<a href=" + url_1 + ">" + "<img src="  + img_1 + "width=\"100%\" height=\"100%\">" + "</a>";
+
+
+                received2 = Data_received[1];
+                console.log(received2);
+                document.getElementById("rname2").innerHTML = received2["movie"]["S"];
+                document.getElementById("comment2").innerHTML = received2["comment"]["S"];
+                var img_2 = "\"" + received2["img"]["S"].toString() + "\"";
+                var url_2 = "\"" + "https://s3.amazonaws.com/coms6998-final/html5/html2/singlev201-the-one.htm?movie=" + received2["movieID"]["S"] + "\"";
+                //console.log(img_2)
+                // document.getElementById("image2").innerHTML = "<img src="  + img_2 + "width=\"100%\" height=\"100%\">";
+                document.getElementById("image2").innerHTML = "<a href=" + url_2 + ">" + "<img src="  + img_2 + "width=\"100%\" height=\"100%\">" + "</a>";
+
+                received3 = Data_received[2];
+                console.log(received3);
+                document.getElementById("rname3").innerHTML = received3["movie"]["S"];
+                document.getElementById("comment3").innerHTML = received3["comment"]["S"];
+                var img_3 = "\"" + received3["img"]["S"].toString() + "\"";
+                var url_3 = "\"" + "https://s3.amazonaws.com/coms6998-final/html5/html2/singlev201-the-one.htm?movie=" + received3["movieID"]["S"] + "\"";
+                //console.log(img_3)
+                // document.getElementById("image3").innerHTML = "<img src="  + img_3 + "width=\"100%\" height=\"100%\">";
+                document.getElementById("image3").innerHTML = "<a href=" + url_3 + ">" + "<img src="  + img_3 + "width=\"100%\" height=\"100%\">" + "</a>";
+
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+  }
+});
+
+
+</script>
+<script src="html2/js/login.js"></script>
+
+
+</html>

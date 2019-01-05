@@ -1,0 +1,438 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
+<html>
+
+<head>
+<style>
+.rating {
+    float:left;
+    /* width:300px; */
+}
+.rating span {  float: right; position:relative; }
+.rating span input {
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity:0;
+}
+.rating span label {
+    /* display:inline-block; */
+    width:30px;
+    height:30px;
+    text-align:center;
+    color:#FFF;
+    background:#ccc;
+    font-size:30px;
+    margin-right:5px;
+    line-height:30px;
+    border-radius:150%;
+    -webkit-border-radius:150%;
+}
+.rating span:hover ~ span label,
+.rating span:hover label,
+.rating span.checked label,
+.rating span.checked ~ span label {
+    background:#F90;
+    color:#FFF;
+}
+</style>
+<title>Movie page</title>
+<!-- for-mobile-apps -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Great Taste Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //for-mobile-apps -->
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+<!-- js -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/getComment.js"></script>
+<script src="js/translate.js"></script>
+<!-- //js -->
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Comfortaa:400,300,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+<!-- banner-body -->
+	<div class="banner-body">
+		<div class="container">
+			<div class="banner-body-content">
+			<div class="col-xs-3 banner-body-left">
+				<div class="logo">
+					<h1><a href="https://s3.amazonaws.com/coms6998-final/html2/index.html">Movie<span>Page</span></a></h1>
+				</div>
+				<div class="top-nav">
+					<nav class="navbar navbar-default">
+						<!-- Brand and toggle get grouped for better mobile display -->
+						<div class="navbar-header">
+						  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						  </button>
+						</div>
+
+						<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+							<nav class="stroke">
+								<ul class="nav navbar-nav">
+									<li><a href="https://s3.amazonaws.com/coms6998-final/html2/index.html" class="hvr-underline-from-left"><i class="home1"></i>Home</a></li>
+
+
+								</ul>
+							</nav>
+						</div>
+						<!-- /.navbar-collapse -->
+					</nav>
+				</div>
+			</div>
+			<div class="col-xs-9 banner-body-right">
+				<div style="text-align:center; background-color:black">
+					<img id=poster width="350" height="500">
+				</div>
+				
+
+
+<!-- Here is the info columns, we will show the movie's actor, director and overview -->
+				<div class="banner-bottom">
+					<div class="col-md-12 banner-left">
+
+						<div class="col-xs-9 banner-right1">
+							<h3 id=title>Movie name</h3>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="col-md-12 banner-left">
+
+						<div class="col-xs-9 banner-right1">
+							<h3>Rating</h3>
+						</div>
+						<div class="clearfix"> </div>
+						<p id="rating">rating score</p>
+					</div>
+					<div class="col-md-12 banner-left">
+
+						<div class="col-xs-9 banner-right1">
+							<h3>Overview</h3>
+						</div>
+						<div class="clearfix"> </div>
+						<p id=overview>overview</p>
+					</div>
+					<div class="col-md-12 banner-left">
+
+						<div class="col-xs-9 banner-right1">
+							<h3>Details</h3>
+						</div>
+						<div class="clearfix"> </div>
+						<p id=details>details</p>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+			<div class="col-xs-3 banner-body-left">
+
+			</div>
+			<div class="col-xs-9 banner-body-right">
+				<!-- single -->
+					<div class="single">
+
+
+
+						<div class="clearfix"> </div>
+
+
+						<div class="three-com">
+							<h3 id=commentNum><span>on</span></h3>
+						</div>
+
+
+<section>
+<div class="rating">
+<button class="Mybutton" onclick="doTranslate()">translate</button>
+<button class="Mybutton" onclick="doGetComment()">original</button>
+<p>
+<h2><b> Here please rate the movie <b></h4><br></p>
+<p>
+    <span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
+    <span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
+    <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
+    <span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
+    <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
+	<br></p>
+</div>
+</section>
+
+
+<div class="leave-comment">
+	<p></p><br>
+	<p></p><br>
+	<p></p><br>
+	<p></p><br>
+	
+							<p><br>Please write down your comments</p>
+							<div>
+								<textarea placeholder="Comments" required=" " id='comment'></textarea>
+								<input onclick="getcomments();" type="submit" value="Submit">
+							</div>
+								
+						</div>
+
+					</div>
+				<!-- //single -->
+
+
+
+
+
+			</div>
+			<div class="clearfix"> </div>
+			<div class="footer">
+				<div class="footer-left">
+					<ul>
+						<li><a href="#">Privacy Policy</a>|</li>
+						<li><a href="#">Terms of Use</a>|</li>
+						<li><a href="mail.html">Contact Us</a></li>
+					</ul>
+					<p>© 2018 Fall COMS6998. All rights reserved | Designed by Team 10</p>
+				</div>
+				<div class="footer-right">
+					<ul class="social-nav model-3">
+					</ul>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		</div>
+	</div>
+<!-- //banner-body -->
+<!-- for bootstrap working -->
+	<script src="js/bootstrap.js"></script>
+<!-- //for bootstrap working -->
+
+<!-- Getting movie details by id from API -->
+<script>
+	var parser = document.createElement('a');
+	parser.href = window.location.href;
+	var rawid = parser.search;
+    var movie_id = rawid.slice(7,);
+	console.log(movie_id);
+	var movie_name = '';
+	var movie_poster_url = '';
+	var movie_genre = '';
+	var movie_runtime = '';
+	var movie_overview = '';
+	var movie_release = '';
+	var movie_language = '';
+	var api_key = '5829c0ea9419f0e7a7ad305c448b14a7';
+	$(document).ready(function(){
+	      $.ajax({
+	        url: 'https://api.themoviedb.org/3/movie/' + movie_id + '?api_key=' + api_key,
+	        dataType: 'jsonp',
+	        jsonpCallback: 'testing'
+	      }).error(function() {
+	        console.log('error')
+	      }).done(function(response) {
+			  console.log(response);
+			  movie_name = response.title;
+			  movie_poster_url = 'https://image.tmdb.org/t/p/w500/' + response.poster_path;
+			  movie_genre = response.genres[0]['name'];
+			  movie_runtime = response.runtime;
+			  movie_overview = response.overview;
+			  movie_release = response.release_date;
+			  movie_language = response.original_language;
+			  console.log("movie name is" + movie_name);
+			  console.log("movie genre is:" + movie_genre);
+			  console.log("image url is:" + movie_poster_url);
+			  console.log("overview is:" + movie_overview);
+			  document.getElementById("overview").innerHTML = movie_overview;
+			  document.getElementById("details").innerHTML = '<p>Release date: ' + movie_release + '<br>Genre: ' + movie_genre + '<br>Language: ' + movie_language + '<br>Runtime: ' + movie_runtime + '</p>';
+			  document.getElementById("title").innerHTML = '<b>' + movie_name + '</b>';
+			  document.getElementById("poster").src = movie_poster_url
+				  
+		  });
+	  });
+	
+</script>
+
+<script>
+  var AWS = window.AWS;
+  AWS.config.update({region:'us-east-1'});
+  var parser = document.createElement('a');
+  parser.href = window.location.href;
+
+  var raw_code = parser.search;
+  var target_code = raw_code.slice(7,);
+  console.log(target_code);
+
+  var token_response = "";
+  console.log("Start testing the cognito");
+
+
+  var settings = {
+      "async": false,
+      "crossDomain": true,
+      "url": "https://fxw1996cc.auth.us-east-1.amazoncognito.com/oauth2/token",
+      "method": "POST",
+      "headers": {
+          "content-type": "application/x-www-form-urlencoded"
+      },
+      "data": {
+          "grant_type": "authorization_code",
+          "client_id": "6oie7f5gbu8omoio1j08iiihds",
+          "redirect_uri": "https://s3.amazonaws.com/coms6998-final/html2/singlev201.html",
+          "code": target_code
+      }
+  }
+
+  $.ajax(settings).done(function (response) {
+      token_response = response;
+      console.log(response);
+      acctoken = response.access_token
+      console.log(acctoken);
+	  console.log("test");
+	  var cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+	  var params = {
+		  AccessToken: acctoken /* required */
+	  };
+	  cognitoidentityserviceprovider.getUser(params, function (err, data) {
+		  if (err) console.log(err, err.stack); // an error occurred
+		  else console.log(data);           // successful response
+
+
+		  name = data.Username
+		  console.log(name)
+  });
+
+
+});
+
+
+
+
+
+    // Check Radio-box
+    $(".rating input:radio").attr("checked", false);
+
+    $('.rating input').click(function () {
+        $(".rating span").removeClass('checked');
+        $(this).parent().addClass('checked');
+    });
+
+    $('input:radio').change(
+      function(){
+        var userRating = this.value;
+		console.log(userRating);
+		localStorage.setItem("rating", userRating);
+    });
+
+
+	function getcomments(){
+		
+		console.log('start');
+		
+		var api_key = '5829c0ea9419f0e7a7ad305c448b14a7';
+		var movie_id = rawid.slice(7);
+		console.log(movie_id);
+		
+		$(document).ready(function () {
+		$.ajax({
+			url: 'https://api.themoviedb.org/3/movie/' + movie_id + '?api_key=' + api_key,
+			dataType: 'jsonp',
+			jsonpCallback: 'testing'
+		}).error(function () {
+			console.log('error')
+		}).done(function (response) {
+			console.log(response);
+			movie_name = response.title;
+			movie_poster_url = 'https://image.tmdb.org/t/p/w500/' + response.poster_path;
+			movie_genre = response.genres[0]['name'];
+			movie_runtime = response.runtime;
+			movie_overview = response.overview;
+			movie_release = response.release_date;
+			movie_language = response.original_language;
+			//console.log("movie name is" + movie_name);
+			//console.log("movie genre is:" + movie_genre);
+			//console.log("image url is:" + movie_poster_url);
+			//console.log("overview is:" + movie_overview);
+			//document.getElementById("overview").innerHTML = movie_overview;
+			//document.getElementById("details").innerHTML = '<p>Release date: ' + movie_release + '<br>Genre: ' + movie_genre + '<br>Language: ' + movie_language + '<br>Runtime:' + movie_runtime + '</p>';
+			//document.getElementById("title").innerHTML = '<b>' + movie_name + '</b>';
+			//document.getElementById("poster").src = movie_poster_url
+
+		});
+	});
+	var comments1 = document.getElementById('comment').value;
+
+	console.log("starting to get");
+	console.log(localStorage.username);
+	//console.log(localStorage.username);
+	//console.log(comments1);
+	//console.log(new Date());
+	//console.log(movie_id);
+	//console.log(movie_poster_url);
+	//console.log(rating);
+	console.log(localStorage.rating);	
+	if (localStorage.rating == undefined) {
+		alert('Please rate the movie');
+	} else if (localStorage.username == 'tzr') {
+		alert('Please login');
+	} else
+	{
+		axios.post('https://jt3d9wpum4.execute-api.us-east-1.amazonaws.com/dev/comment', {
+			username: localStorage.username,
+			time: new Date().toString().slice(0, 24),
+			movieID: movie_id,
+			rating: localStorage.rating,
+			img: movie_poster_url,
+			comment: comments1,
+			movie: movie_name
+		})
+			.then(function (response) {
+				console.log(response);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		localStorage.removeItem('rating');
+		console.log(localStorage.rating);
+
+		//{
+		//		"username": "tzr",
+		//			"time": "2013/12/31",
+		//				"movieID": "123",
+		//					"rating": "3",
+		//						"img": "www.91.com",
+		//							"comment": "I like it"
+		//	}
+
+
+		console.log("ready to write in");
+		document.getElementById('comment').value = '';
+		setTimeout(function(){ location.reload();},500);
+	}
+};
+
+</script>
+
+<!-- <script>
+	localStorage.setItem("username", "tzr");
+	console.log(localStorage.username);
+</script> -->
+<script src="js/postComment.js"></script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- By Xuewei Fan(xf2166), Zirui Tan(zt2219)-->
+
+
+<head>
+
+    <title>AutomationEdge ChatBot</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+
+    <style>
+        /* for chat UI */
+
+        .floating-action {
+            bottom: 0;
+            position: fixed;
+            margin: 1em;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .btn.btn-fab {
+            padding: 16px;
+            border-radius: 50%;
+        }
+
+        .floating-btn {
+            background: #de6d11 none repeat scroll 0 0;
+            bottom: 24px;
+            color: #fff;
+            position: fixed;
+            right: 24px;
+            z-index: 1000;
+        }
+
+        .btn-fab {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+        }
+
+        .btn-raised {
+            box-shadow: 0 5px 3px 0 rgba(0, 0, 0, .12), 0 1px 2px 0 rgba(0, 0, 0, .24);
+        }
+
+        #chat-window {
+            background: #FFFFFF;
+            height: 500px;
+            width: 300px;
+            margin: 36px 36px;
+            border-radius: 26px;
+            display: none;
+            box-shadow: 0 5px 3px 0 rgba(0, 0, 0, .12), 0 1px 2px 0 rgba(0, 0, 0, .24);
+            font: 12px;
+        }
+
+        .input-chat {
+            box-shadow: 0px -8px 20px -10px #ddd;
+            width: 81%;
+            position: absolute;
+            bottom: 0;
+            height: 70px;
+            margin-bottom: 30px;
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        .outer-container {
+            width: 90%;
+            height: 65px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 25px;
+        }
+
+        .inner-container {
+            border: none;
+            width: 100%;
+            resize: none;
+            outline: none;
+            height: 70px;
+            font-size: small;
+            position: absolute;
+            left: 0;
+            overflow-x: scroll;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        .inner-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-header {
+            height: 40px;
+            border-radius: 26px 26px 0px 0px;
+            background: #de6d11;
+            margin-top: 36px;
+            width: 100%;
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .chat-container {
+            overflow: auto;
+            height: 390px;
+            width: 100%;
+            position: relative;
+            background: beige;
+            /* background:url('wallpaper-chatbot.jpg'); */
+        }
+
+        .chat-container::-webkit-scrollbar {
+            display: none;
+            width: 8px;
+        }
+        /* ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+        } */
+
+        .msg-text-robot {
+            height: fit-content;
+            border-radius: 8px 8px 8px 8px;
+            background: rgba(102, 100, 100, 0.5);
+            color: #fff;
+            padding: 5px 10px;
+            font-size: small;
+            box-shadow: 0 0px 5px 0px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .arrow-left {
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 5px solid rgba(26, 26, 26, 0.50);
+            top: 7%;
+            position: relative;
+            border-width: 5px;
+            margin-top: 5%;
+        }
+
+        .msg-text-sent {
+            height: fit-content;
+            border-radius: 8px 8px 8px 8px;
+            background: rgba(236, 164, 9, 0.5);
+            color: #480563;
+            padding: 5px 10px;
+            font-size: small;
+            box-shadow: 0 0px 5px 0px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .arrow-right {
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid rgba(236, 164, 9, 0.5);
+            top: 7%;
+            position: relative;
+            border-width: 5px;
+            margin-top: 5%;
+        }
+
+        .avatar {
+            background: #850909;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            color: white;
+            padding: 5px 10px;
+        }
+
+        .time-stamp {
+            font-size: xx-small;
+            color: #000;
+            margin: 5px;
+        }
+
+        .msg {
+            height: fit-content;
+            padding: 10px 10px 0px 10px;
+            display: flex;
+        }
+
+        .sent-msg {
+            flex-direction: row-reverse;
+        }
+
+        .msgbox-group {
+            display: flex;
+            margin-left: 5px;
+        }
+
+        #attachFile>input {
+            display: none !important;
+        }
+        .button {
+            background-color: #de6d11;
+            border: none;
+            color: white;
+			border-radius: 10px 10px 10px 10px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+    </style>
+    <script>
+
+        $(document).ready(function () {
+            var bIconDisplay = true;
+
+            $('#collapse').css('display', 'none');
+            $('#msg').css('display', 'block');
+
+            $('#input-msg').val('');
+
+            $("a[href='#chat-window']").click(function () {
+                $('#chat-window').toggle("slide");
+                if (bIconDisplay) {
+                    if ($('.chat-container').children('.msg').length == 0) {
+                        setTimeout(function () {
+                            initialMsg();
+
+                        }, 1000);
+                    }
+                    $('#collapse').css('display', 'block');
+                    $('#msg').css('display', 'none');
+                    bIconDisplay = false;
+                } else {
+                    $('#collapse').css('display', 'none');
+                    $('#msg').css('display', 'block');
+                    bIconDisplay = true;
+                }
+            });
+
+            $("#input-msg").keypress(function(event) {
+               //alert("enter event");
+
+               if (event.which == 13) {
+                    event.preventDefault();
+
+                   if ($('#input-msg').val() != '') {
+                    $('.chat-container').append(`<div class="msg sent-msg">
+                    <div style="display:inline;">
+                        <div class="msgbox-group">
+                            <div>
+                                <div class="msg-text-sent">`
+                        + $('#input-msg').val() +
+                        `</div>
+                                <div class="time-stamp pull-right">`
+                        + getCurrentTime() +
+                        `</div>
+                            </div>
+                            <div class="arrow-right"></div>
+                        </div>
+                    </div>
+                </div>`);
+                    var oWords = document.getElementById("chatcontainer");
+                    oWords.scrollTop = oWords.scrollHeight;
+                    setTimeout(function () {
+                         send();
+                        //getMe ssage($('#input-msg').val());
+                        $('#input-msg').val('');
+                    }, 500);
+                }
+                }
+            });
+            $("#send-msg").click(function () {
+                //alert("Send event");
+
+                if ($('#input-msg').val() != '') {
+                    $('.chat-container').append(`<div class="msg sent-msg">
+                    <div style="display:inline;">
+                        <div class="msgbox-group">
+                            <div>
+                                <div class="msg-text-sent">`
+                        + $('#input-msg').val() +
+                        `</div>
+                                <div class="time-stamp pull-right">`
+                        + getCurrentTime() +
+                        `</div>
+                            </div>
+                            <div class="arrow-right"></div>
+                        </div>
+                    </div>
+                </div>`);
+                    var oWords = document.getElementById("chatcontainer");
+                    oWords.scrollTop = oWords.scrollHeight;
+                    setTimeout(function () {
+                         send();
+                        //getMessage($('#input-msg').val());
+                        $('#input-msg').val('');
+                    }, 500);
+                }
+
+
+            });
+
+
+
+            /*function getCurrentTime() {
+                var CurrentDate = new Date();
+                return CurrentDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            }
+*/
+            function initialMsg() {
+                $('.chat-container').append(`<div class="msg">
+                    <div style="display:inline;">
+                        <div class="avatar">S</div>
+                    </div>
+                    <div style="display:inline;">
+                        <div class="msgbox-group">
+                            <div class="arrow-left"></div>
+                            <div>
+                                <div class="msg-text-robot">
+                                    <p>Hello! I am Cinema Finder, it is my pleasure to help you!</p>
+
+                                <div class="time-stamp pull-left">`
+                    + getCurrentTime() +
+                    `</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+            }
+        })
+
+        function getMessage(txt) {
+                $('.chat-container').append(`<div class="msg">
+                    <div style="display:inline;">
+                        <div class="avatar">S</div>
+                    </div>
+                    <div style="display:inline;">
+                        <div class="msgbox-group">
+                            <div class="arrow-left"></div>
+                            <div>
+                                <div class="msg-text-robot">`
+                    + txt +
+                    `</div>
+                                <div class="time-stamp pull-left">`
+                    + getCurrentTime() +
+                    `</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+                var oWords = document.getElementById("chatcontainer");
+                oWords.scrollTop = oWords.scrollHeight;
+            }
+
+        function getCurrentTime() {
+                var CurrentDate = new Date();
+                return CurrentDate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            }
+
+        //Access token And API.AI Post Call
+
+        // Send Precess...
+        // This is where we use ajax to use the api we get//
+        function send() {
+            var text = $("#input-msg").val();
+
+            console.log('hello 1');
+
+              $.ajax({
+                type: 'POST',
+                url: 'https://legcetlrhj.execute-api.us-east-2.amazonaws.com/dev/chatbot',
+                headers: {
+                      "x-api-key": "NEJgWeu3wBvWkn6Oiekx2FeaK1QL6tO1094KjU8e"
+                  },
+                data: JSON.stringify({
+                    messages: [
+                        {
+                            type: "abc",
+                            unconstruced: {
+                                id: "yes",
+                                text: `${text}`,
+                                timestamp: "10293"
+                            }
+                        }
+                    ]
+                }),
+               //alert(data);
+                success: function(data) {
+                     $('.chat-container').append(`<div class="msg">
+                    <div style="display:inline;">
+                        <div class="avatar">S</div>
+                    </div>
+                    <div style="display:inline;">
+                        <div class="msgbox-group">
+                            <div class="arrow-left"></div>
+                            <div>
+                                <div class="msg-text-robot">`
+                        + `${data.messages[0].unconstruced.text}` +
+                        `</div> <div class="time-stamp pull-left"> `
+                        + getCurrentTime() +
+                        `</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+                var oWords = document.getElementById("chatcontainer");
+                oWords.scrollTop = oWords.scrollHeight;
+                },
+
+            });
+            $('#input').val("");
+
+
+            //setResponse("Loading...");
+        }
+    </script>
+</head>
+
+<body>
+    <div class="floating-action">
+
+        <a class="floating-btn btn btn-fab btn-raised" href="#chat-window">
+            <svg id="msg" fill="#fff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"
+                />
+                <path d="M0 0h24v24H0z" fill="none" />
+            </svg>
+            <svg id="collapse" fill="#fff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" fill="#fff" />
+            </svg>
+        </a>
+        <div id="chat-window">
+            <div class="chat-header">MAGMA Chat Bot</div>
+           <!-- <iframe width="295"
+    height="450" src="http://localhost:8080/Chat/APIAIBOT.html"/>
+            -->
+    <div class="chat-container" id="chatcontainer">
+                <!--<div>
+                    <img style="position: absolute; clip: rect(120px,60px,200px,0px);" src="./loading.gif">
+                </div> -->
+
+            </div>
+            <div class="input-chat">
+                <div class="outer-container">
+                    <textarea id="input-msg" class="inner-container" placeholder="Enter text here...">
+                    </textarea>
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="margin-top:5px; cursor:pointer;" id="send-msg" title="send">
+                                <svg   fill="#666" height="20" viewBox="0 0 22 22" width="20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                </svg>
+                        </span>
+                   <!-- <span title="Attach File" id="attachFile">
+                            <label for="file-upload">
+                                    <svg style="cursor:pointer;" fill="#666" height="20" viewBox="0 0 22 22" width="20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 12.5C2 9.46 4.46 7 7.5 7H18c2.21 0 4 1.79 4 4s-1.79 4-4 4H9.5C8.12 15 7 13.88 7 12.5S8.12 10 9.5 10H17v2H9.41c-.55 0-.55 1 0 1H18c1.1 0 2-.9 2-2s-.9-2-2-2H7.5C5.57 9 4 10.57 4 12.5S5.57 16 7.5 16H17v2H7.5C4.46 18 2 15.54 2 12.5z"
+                                        />
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                    </svg>
+                            </label>
+                            <input type="file" id="file-upload">
+                    </span>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

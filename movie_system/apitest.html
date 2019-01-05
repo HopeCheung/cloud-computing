@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<style>
+body {
+    font-family: Arial;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+form.example input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+form.example button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+}
+
+form.example button:hover {
+    background: #0b7dda;
+}
+
+form.example::after {
+    content: "";
+    display: table;
+}
+</style>
+
+<style>
+#css1
+{float: left;
+  width: 20%;
+  padding: 11.5px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;}
+</style>
+</head>
+<body>
+
+<h2>Search Button</h2>
+
+<form class="example" action = "https://s3.amazonaws.com/coms6998-final/html2/single.html">
+    <td colspan="2"><input class="textBox" id="text1" type="text" maxlength="30"    required/></td>
+  <td><input type="button"  class="fa fa-search" value="Submit" onclick="getname()" id = 'css1'></td>
+</form>
+
+<p>this is the overview of this movie:</p>
+
+</body>
+
+<script>
+function getname(){
+var query1 = document.getElementById('text1').value;
+console.log(query1)
+// api_info = `https://api.themoviedb.org/3/search/movie?api_key=26a89731ade6d8c6549edd334950ea73&query=${query1}`
+// console.log(api_info)
+var api_key = '26a89731ade6d8c6549edd334950ea73';
+var node = document.createElement("LI")
+var poster_path = ''
+var overview = ''
+// window.open("https://s3.amazonaws.com/coms6998-final/html2/single.html")
+
+// here to get the id of movie
+$(document).ready(function(){
+      $.ajax({
+        url: 'http://api.themoviedb.org/3/search/movie?api_key=' + api_key + '&query=' + query1,
+        dataType: 'jsonp',
+        jsonpCallback: 'testing'
+      }).error(function() {
+        console.log('error')
+      }).done(function(response) {
+        console.log(response)
+        moviename = response.results[0].title
+        id = response.results[0].id
+        poster_path = response.results[0].poster_path
+        overview = response.results[0].overview
+        console.log(id)
+        console.log("image url is:" + poster_path)
+        console.log("overview is:" + overview)
+var linebreak = document.createElement('br');
+
+    document.body.appendChild(linebreak);
+
+
+        var t = document.createTextNode(overview);
+    document.body.appendChild(t);
+
+
+      document.body.appendChild(linebreak);
+       // if (response.total_results > 0)
+       //  {
+       //  content = "";
+       //      for (i = 0; i < response.total_results; i++)
+       //      {
+       //      url = response.results[i].poster_path;
+       //      content += "";
+       //      };
+       //  $("#poster").html(content);
+       //      }
+
+      });
+
+
+    });
+
+
+// here to get the image of this themovie
+document.getElementById('css1').onclick = function() {
+        src = 'https://image.tmdb.org/t/p/w500' + poster_path,
+        img = document.createElement('img');
+    img.src = src;
+    document.body.appendChild(img);
+}
+  };
+</script>
+
+
+</html>

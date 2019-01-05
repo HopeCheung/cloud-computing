@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!-- COMS 6998 HW3 By Zirui Tan, Xuewei Fan, You Yan and Haopeng Zhang -->
+
+
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+
+<header>
+  <h1>COMS 6998 Photo Album</h1>
+</header>
+<body>
+<img src="https://s3.us-east-2.amazonaws.com/ccpj1/demo.png" width="300" height="200">
+
+
+<!-- Here is the button for uploading image -->
+    <td><label><h2>Please upload your image:</h2></label></td>
+    <input type="file" id="file" name="files[]" />
+    		<button id = "upload1" type="button">Upload</button>
+
+    		<ul></ul>
+
+
+<p><strong>Note:</strong>We accept different kinds of images, please try!</p>
+
+<p> </p>
+
+<!-- Here is the button for searching image -->
+<tr>
+    <td><label><h2>Input your key words:<h2></label></td>
+</tr>
+<tr>
+    <td colspan="2"><input class="textBox" id="query" type="text" maxlength="30"    required/></td>
+    <input id = "search1" type="button" class="loginButtons" value="Submit" onclick="getApi()">
+<ul></ul>
+</body>
+<!-- this is the function for Searching image -->
+<script type="text/javascript">
+function getApi(){
+  console.log('Get start');
+  var text_info = document.getElementById('query').value;
+  console.log(typeof(text_info))
+  var url_test = `https://odgl00b7vb.execute-api.us-east-1.amazonaws.com/beta/search?q=${text_info}`;
+  var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": `https://odgl00b7vb.execute-api.us-east-1.amazonaws.com/beta/search?q=${text_info}`,
+                "method": "GET",
+                "headers": {
+
+                    "Content-Type": "application/json",
+                    "x-api-key": "ltHjDniKjI3SjQZcKjVpy8lakqZcaQhh85encu1m"
+                }
+            }
+  console.log(url_test)
+
+            $.ajax(settings).done(function (response) {
+                console.log('running!')
+                console.log(response);
+                   results = response.body.results;
+               for (var i = 0; i < results.length; i++) {
+                 var oImg = document.createElement("img");
+                 oImg.setAttribute('src', `${results[i].url}`);
+                 oImg.setAttribute("height", "250px");
+                 oImg.setAttribute("width", "250px");
+
+                 console.log(oImg);
+                document.body.appendChild(oImg)
+             }
+
+            });
+          };
+</script>
+
+<!--This is the function for uploading image  -->
+<script>
+$(document).ready(function(){
+      $("#upload1").click(function(){
+        var f = document.querySelector('input[type=file]').files[0];
+          if (f){
+            //console.log(f.name);
+            //console.log(f.type);
+            console.log(f.size);
+            //console.log(f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a');
+
+            if (!f.type.match('image.*')) {
+              alert("Must be image");
+              return false;
+            }
+            // To come up with the following few lines I debugged for a whole day. I HATE FRONTEND!!!
+            // Originally I tried to read the file using FileReader.readAsBinaryString().
+            // However, if I use this binary string directly as payload, both apigClient and JQuery AJAX will somehow corrupt the data. (Have to encode in base64?)
+            // Thanks to XMLHttpRequest Level 2, the send method has been extended to enable easy transmission of HTML documents as well as binary data types such as ArrayBuffer, Blob, or File object (It also works with Typed Arrays).
+            // Reference: https://www.quora.com/How-do-I-upload-an-image-using-AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", `https://odgl00b7vb.execute-api.us-east-1.amazonaws.com/beta/upload/cccolumbiahw3/${f.name}`);
+            xhr.setRequestHeader("Content-Type", f.type);
+            console.log("upload succeed!")
+            xhr.setRequestHeader("x-api-key", "ltHjDniKjI3SjQZcKjVpy8lakqZcaQhh85encu1m");
+            // xhr.onload = function (event) {
+            // 	$("ul").append("<li>Uploaded: " + xhr.response + "</li>");
+            // };
+            xhr.send(f);
+          }
+          else{
+            alert("No file chosen!");
+          }
+        });
+      });
+    </script>
+
+</html>

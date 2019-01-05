@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<h1>CHATBOT</h1>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> 
+
+<script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+<script type="text/javascript" src="lib/url-template/url-template.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+<script type="text/javascript" src="apigClient.js"></script>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+<div id='bodybox'>
+  <div id='chatborder'>
+
+  <p id="chatlog7" class="chatlog">&nbsp;</p>
+    <p id="chatlog6" class="chatlog">&nbsp;</p>
+    <p id="chatlog5" class="chatlog">&nbsp;</p>
+    <p id="chatlog4" class="chatlog">&nbsp;</p>
+    <p id="chatlog3" class="chatlog">&nbsp;</p>
+    <p id="chatlog2" class="chatlog">&nbsp;</p>
+    <p id="chatlog1" class="chatlog">&nbsp;</p>
+    <input type="text" name="chat" id="chatbox" placeholder="Hi there!" onfocus="placeHolder()">
+  </div>
+
+<style >
+body {
+    font: 25px arial, sans-serif;
+    background-color:#EBAC3B;
+    background-image: url("https://c1.staticflickr.com/9/8446/28958002022_a8b66a1069_b.jpg");
+    min-height: 30%;
+    background-position: center;
+    background-size: center;
+    background-repeat: no-repeat;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+#bodybox {
+    display: flex;
+  justify-content:center;
+  text-align: center;
+}
+h1, p {
+  font-family: sans-serif;
+  text-align: center;
+  color: #323330;
+  font-size:  100px;
+}
+.chatlog {
+   font: 30px arial, sans-serif;
+}
+#chatbox {
+    background-color: #eee;
+    border: none;
+    font-family: sans-serif;
+    color: #000;
+    text-align: center;
+    text-decoration: underline;
+    text-decoration-color: white;
+    display: inline-block;
+    font-size: 30px;
+}
+h1 {
+  margin: auto;
+}
+pre {
+  background-color: #f0f0f0;
+  margin-right: 20px;
+}
+</style>
+<body>
+<script>
+  var AWS = window.AWS;
+  var parser = document.createElement('a');
+  parser.href = window.location.href;
+
+  var raw_code = parser.search;
+  var target_code = raw_code.slice(6,);
+  console.log(target_code);
+
+  var token_response = "";
+  console.log("Start testing the cognito");
+
+
+  var settings = {
+      "async": false,
+      "crossDomain": true,
+      "url": "https://yztf-bot.auth.us-east-1.amazoncognito.com/oauth2/token",
+      "method": "POST",
+      "headers": {
+          "content-type": "application/x-www-form-urlencoded"
+      },
+      "data": {
+          "grant_type": "authorization_code",
+          "client_id": "24mlkg1kfheildu1i8d7q8t17r",
+          "redirect_uri": "https://s3.amazonaws.com/chatbot-hw2/new_chatbot.html",
+          "code": target_code
+      }
+  }
+
+  $.ajax(settings).done(function (response) {
+      token_response = response;
+      console.log(response);
+      console.log(response.id_token);
+      console.log("test");
+  });
+
+ //****************************************************************
+var messages = [], //array that hold the record of each string in chat
+    lastUserMessage = "", //keeps track of the most recent input string from the user
+    botMessage = "", //var keeps track of what the chatbot is going to say
+    botName = 'Chatbot', //name of the chatbot
+    talking = true; //when false the speach function doesn't work
+//****************************************************************
+  $.when($.when(step1()).then(step2)).then(step3);
+  function step1() {
+    AWS.config.region = 'us-east-1';
+
+    // Configure the credentials provider to use your identity pool
+    var UserPoolId = 'us-east-1_ftF1LL8fl';
+    var loginKey = 'cognito-idp.' + 'us-east-1' + '.amazonaws.com/' + UserPoolId;
+    var abc = token_response.id_token;
+    console.log("start step1: confige credentials");
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'us-east-1:1ef8f32c-13c6-4135-88fe-0cc8b0e02196',
+        // IdentityId: identityId,
+        Logins: {
+            'cognito-idp.us-east-1.amazonaws.com/us-east-1_ftF1LL8fl': abc
+          }
+    });
+  }
+  
+  function step2() {
+    // Make the call to obtain credentials
+    //call refresh method in order to authenticate user and get new temp credentials
+    AWS.config.credentials.refresh((error) => {
+        console.log("Start step2: ")
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Successfully logged!');
+        }
+    });
+  }
+
+  console.log("start step3");
+  function step3() {
+    AWS.config.credentials.get(function(err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      else{
+        console.log('Obtain AWS credentials')
+        // Credentials will be available when this function is called.
+        var accessKeyId = AWS.config.credentials.accessKeyId;
+        var secretAccessKey = AWS.config.credentials.secretAccessKey;
+        var sessionToken = AWS.config.credentials.sessionToken;
+        AWS.config.update({
+            accessKeyId: accessKeyId,
+            secretAccessKey: secretAccessKey,
+            sessionToken: sessionToken
+        })
+        sdk = apigClientFactory.newClient({
+          apiKey: "6IPO0i8jWS9Vd9O4BwiY04CfKImfv2rz3k7wouTu",
+          accessKey: AWS.config.credentials.accessKeyId,
+          secretKey: AWS.config.credentials.secretAccessKey,
+          sessionToken: AWS.config.credentials.sessionToken
+        }); 
+        console.log(sdk);
+
+        console.log("accessKeyId: ", accessKeyId);
+        console.log("secretAccessKey: ", secretAccessKey);
+        console.log("sessionToken: ", sessionToken);
+      }
+    });
+  }
+  console.log("Start Creating the apigClientFactory");
+  console.log("accessKeyId:", AWS.config.credentials.accessKeyId); 
+//****************************************************************
+//edit this function to change what the chatbot says
+function chatbotResponse() { 
+    //botMessage = "Hi"; //the default message
+    //var url_id = "https://xr7vm7e749.execute-api.us-east-1.amazonaws.com/beta/chatbot";
+    // $.ajax({
+    //     url: url_id,
+    //     type: 'POST',
+    //     data: JSON.stringify({text:lastUserMessage}),
+    //     headers: {"x-api-key": '6IPO0i8jWS9Vd9O4BwiY04CfKImfv2rz3k7wouTu'},
+    //     dataType: 'json',
+    //     crossDomain: true,
+    //     success: function(data) {
+    //         received = JSON.parse(data.body).message;
+    //         botMessage = received;
+    //         messages.push("<b>" + botName + ":</b> " + botMessage);
+    //       for (var i = 1; i < 8; i++) {
+    //       if (messages[messages.length - i])
+    //         document.getElementById("chatlog" + i).innerHTML = messages[messages.length - i];
+    //     }
+    //     },
+    //     error: function(e) {
+    //         alert("failed" + JSON.stringify(e));
+    //     }
+    // });
+    var params = {};
+    console.log("Send message");
+    console.log(JSON.stringify({text:lastUserMessage}));
+    var body = {
+              text: lastUserMessage
+            };
+    var additionalParams = {};
+    console.log("Check SDK");
+    console.log(sdk);
+    sdk.chatbotPost(params, body, additionalParams)
+      .then(function(result){
+          console.log("Received message");
+          console.log(result);
+          received = JSON.parse(result.data.body).message;
+          botMessage = received;
+          console.log("Processed botMessage");
+          console.log(botMessage);
+          messages.push("<b>" + botName + ":</b> " + botMessage);
+          for (var i = 1; i < 8; i++) {
+          if (messages[messages.length - i])
+             document.getElementById("chatlog" + i).innerHTML = messages[messages.length - i];
+         }
+      }
+   )
+  }
+//****************************************************************
+//this runs each time enter is pressed.
+//It controls the overall input and output
+function newEntry() {
+  //if the message from the user isn't empty then run 
+  if (document.getElementById("chatbox").value != "") {
+      lastUserMessage = document.getElementById("chatbox").value;
+      document.getElementById("chatbox").value = "";
+      //adds the value of the chatbox to the array messages
+      messages.push("<b>" + "You" + ":</b> " + lastUserMessage);
+      chatbotResponse();
+      //add the chatbot's name and message to the array messages
+    }
+}
+
+//runs the keypress() function when a key is pressed
+document.onkeypress = keyPress;
+//if the key pressed is 'enter' runs the function newEntry()
+function keyPress(e) {
+    var x = e || window.event;
+    var key = (x.keyCode || x.which);
+    if (key == 13 || key == 3 || key == 66) {
+      //runs this function when enter is pressed
+      newEntry();
+    }
+    if (key == 38) {
+      console.log('hi')
+      //document.getElementById("chatbox").value = lastUserMessage;
+  }
+}
+//clears the placeholder text ion the chatbox
+//this function is set to run when the users brings focus to the chatbox, by clicking on it
+function placeHolder() {
+    document.getElementById("chatbox").placeholder = "";
+}
+</script>
+</body>
+</html>

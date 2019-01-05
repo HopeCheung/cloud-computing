@@ -1,0 +1,115 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
+<html>
+
+<head>
+    <style>
+        .rating {
+    float:left;
+    /* width:300px; */
+}
+.rating span {  float: right; position:relative; }
+.rating span input {
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity:0;
+}
+.rating span label {
+    /* display:inline-block; */
+    width:30px;
+    height:30px;
+    text-align:center;
+    color:#FFF;
+    background:#ccc;
+    font-size:30px;
+    margin-right:5px;
+    line-height:30px;
+    border-radius:150%;
+    -webkit-border-radius:150%;
+}
+.rating span:hover ~ span label,
+.rating span:hover label,
+.rating span.checked label,
+.rating span.checked ~ span label {
+    background:#F90;
+    color:#FFF;
+}
+</style>
+    <title>Movie page</title>
+    <!-- for-mobile-apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Great Taste Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- //for-mobile-apps -->
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- js -->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- //js -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+        rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Comfortaa:400,300,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <script>
+        console.log("redirecting to the new page");
+        var urlVars = getUrlVars();
+        var movieName = urlVars["movie"];
+        console.log(`movie is ${movieName}`);
+    var api_key = '5829c0ea9419f0e7a7ad305c448b14a7';
+    var poster_path = ''
+    var overview = ''
+    // window.open("https://s3.amazonaws.com/coms6998-final/html2/single.html")
+
+    // here to get the id of movie
+    $(document).ready(function () {
+        console.log(movieName);
+        $.ajax({
+            url: 'https://api.themoviedb.org/3/search/movie?api_key=' + api_key + '&query=' + movieName,
+            dataType: 'jsonp',
+            jsonpCallback: 'testing'
+        }).error(function () {
+            console.log('error')
+        }).done(function (response) {
+            console.log('-----------------');
+            console.log(response)
+            console.log(response.total_results);
+            if (response.total_results == 0){
+                alert("Sorry, we don't have the movie you searched");
+                }
+            moviename = response.results[0].title
+            id = response.results[0].id
+            poster_path = response.results[0].poster_path
+            overview = response.results[0].overview
+            // document.search.myInput.value = id
+            console.log(id);
+            window.location.href = "https://s3.amazonaws.com/coms6998-final/html2/html2/singlev201-the-one.htm?movie=" + id
+        })
+
+    });
+
+        function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+    </script>  
+</body>
+
+</html>
